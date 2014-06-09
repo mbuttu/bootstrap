@@ -188,10 +188,10 @@ angular.module('ui.bootstrap.timepicker', [])
   };
 
   // Call internally when we know that model is valid.
-  function refresh( keyboardChange ) {
+  function refresh() {
     makeValid();
     ngModelCtrl.$setViewValue( new Date(selected) );
-    updateTemplate( keyboardChange );
+    updateTemplate();
   }
 
   function makeValid() {
@@ -200,15 +200,15 @@ angular.module('ui.bootstrap.timepicker', [])
     $scope.invalidMinutes = false;
   }
 
-  function updateTemplate( keyboardChange ) {
+  function updateTemplate() {
     var hours = selected.getHours(), minutes = selected.getMinutes();
 
     if ( $scope.showMeridian ) {
       hours = ( hours === 0 || hours === 12 ) ? 12 : hours % 12; // Convert 24 to 12 hour system
     }
 
-    $scope.hours = keyboardChange === 'h' ? hours : pad(hours);
-    $scope.minutes = keyboardChange === 'm' ? minutes : pad(minutes);
+    $scope.hours = pad( hours );
+    $scope.minutes = pad( minutes );
     $scope.meridian = selected.getHours() < 12 ? meridians[0] : meridians[1];
   }
 

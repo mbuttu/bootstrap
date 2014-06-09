@@ -714,11 +714,39 @@ describe('timepicker directive', function () {
       expect(getModelState()).toEqual([14, 40]);
     });
 
+    it('always pads hours & minutes', function() {
+      // Make sure hours and minutes are padded in 12 hour format
+      $rootScope.meridian = true;
+      element = $compile('<timepicker ng-model="time" show-meridian="meridian"></timepicker>')($rootScope);
+      $rootScope.$digest();
+
+      var hours = getHoursInputEl();
+      var minutes = getMinutesInputEl();
+
+      // Make sure the time is padded when the template is first loaded
+      expect(getTimeState()).toEqual(['02', '40', 'PM']);
+      expect(getModelState()).toEqual([14, 40]);
+
+      changeInputValueTo(hours, 5);
+      changeInputValueTo(minutes, 7);
+      $rootScope.$digest();
+      expect(getTimeState()).toEqual(['05', '07', 'PM']);
+      expect(getModelState()).toEqual([17, 7]);
+
+      // Make sure hours and minutes are padded in 24 hour format
+      $rootScope.meridian = false;
+      changeInputValueTo(hours, 0);
+      changeInputValueTo(minutes, 0);
+      $rootScope.$digest();
+      expect(getTimeState()).toEqual(['00', '00', 'AM']);
+      expect(getModelState()).toEqual([0, 0]);
+    });
+
     it('updates hours & pads on input change & pads on blur', function() {
       var el = getHoursInputEl();
 
       changeInputValueTo(el, 5);
-      expect(getTimeState()).toEqual(['5', '40', 'PM']);
+      expect(getTimeState()).toEqual(['05', '40', 'PM']);
       expect(getModelState()).toEqual([17, 40]);
 
       el.blur();
@@ -730,7 +758,7 @@ describe('timepicker directive', function () {
       var el = getMinutesInputEl();
 
       changeInputValueTo(el, 9);
-      expect(getTimeState()).toEqual(['02', '9', 'PM']);
+      expect(getTimeState()).toEqual(['02', '09', 'PM']);
       expect(getModelState()).toEqual([14, 9]);
 
       el.blur();
